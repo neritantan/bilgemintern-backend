@@ -8,6 +8,6 @@ COPY backend/pyproject.toml backend/uv.lock ./
 
 RUN uv sync
 
-COPY . .
+COPY ./backend .
 
 CMD ["uv", "run", "fastapi", "dev", "--host", "0.0.0.0"]
