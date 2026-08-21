@@ -12,7 +12,7 @@ class NoteDB(BaseModel):
     note_id: int
     text: str
 
-fruits = ["apple", "banana", "strawberry", "mango"]
+fruits = ["apple", "banana", "strawberry", "mango", "peach"]
 notes = []
 notecount = len(notes)
 
