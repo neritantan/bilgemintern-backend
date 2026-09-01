@@ -5,8 +5,6 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                hello('backend')
-
                 sh 'docker build -t bilgemintern-backend:latest .'
                 // docker run
                 sh 'docker run -d --name app -p 8000:8000 bilgemintern-backend:latest'
@@ -25,29 +23,11 @@ pipeline {
         stage('Push') {
             steps {
                 script {
-                    env.HASH = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                    env.HASH = shortHash()
+                    pushToGhcr(image: 'bilgemintern-backend', tag: env.HASH)
                 }
-
-                withCredentials([usernamePassword(credentialsId: 'ghcr-login', passwordVariable: 'GHCR_PAT', usernameVariable: 'GHCR_USER')]) {
-                    sh 'echo $GHCR_PAT | docker login ghcr.io -u $GHCR_USER --password-stdin'
-
-                    script {
-                        def img = "ghcr.io/${env.GHCR_USER}/bilgemintern-backend:${env.HASH}"
-
-                        if (sh(script: "docker manifest inspect ${img} > /dev/null 2>&1", returnStatus: true) != 0) {
-                            sh "docker tag bilgemintern-backend:latest ${img}"
-                            sh "docker push ${img}"
-                        }
-                        else {
-                            echo "Image ${img} already exists in GHCR. Skipping push."
-                        }
-                    }
-                }
-
-                sh 'echo "Pushed to GHCR successfully."'
             }
         }
-
         stage('Deploy') {
             steps {
                 // SSH to the dev server and deploy the application.
