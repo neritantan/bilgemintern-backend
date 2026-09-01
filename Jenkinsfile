@@ -30,24 +30,8 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                // SSH to the dev server and deploy the application.
-                sh 'echo "Deploying to dev server..."'
-
                 script {
-                    withCredentials([
-                        sshUserPrivateKey(credentialsId: 'server-ssh', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER'),
-                    ]) {
-
-                        sh """
-                        ssh -i \$SSH_KEY -o StrictHostKeyChecking=no \$SSH_USER@dev '
-                            docker stop app || true
-                            docker rm app || true
-                            docker pull ghcr.io/neritantan/bilgemintern-backend:${env.HASH}
-                            docker run -d --name app -p 80:8000 ghcr.io/neritantan/bilgemintern-backend:${env.HASH}
-                            docker image prune -a -f --filter "until=24h"
-                        '
-                        """
-                    }
+                    deployToDev(image: 'bilgemintern-backend', tag: env.HASH, name: 'app', ports: '80:8000')
                 }
             }
         }
