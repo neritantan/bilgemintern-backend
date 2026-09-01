@@ -1,8 +1,12 @@
+@Library('bilgemintern') _
+
 pipeline {
     agent any
     stages {
         stage('Build') {
             steps {
+                hello('backend')
+
                 sh 'docker build -t bilgemintern-backend:latest .'
                 // docker run
                 sh 'docker run -d --name app -p 8000:8000 bilgemintern-backend:latest'
