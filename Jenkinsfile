@@ -30,9 +30,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                script {
-                    deployToDev(image: 'bilgemintern-backend', tag: env.HASH, name: 'app', ports: '80:8000')
-                }
+                deployToDev()
             }
         }
     }
