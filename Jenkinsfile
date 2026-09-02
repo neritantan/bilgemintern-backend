@@ -7,6 +7,7 @@ pipeline {
             steps {
                 gitleaks()
                 trivyFs()
+                dependencyCheck()
             }
         }
         stage('Build') {
