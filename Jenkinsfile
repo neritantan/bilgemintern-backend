@@ -6,6 +6,7 @@ pipeline {
         stage('Scan') {
             steps {
                 gitleaks()
+                trivyFs()
             }
         }
         stage('Build') {
@@ -13,6 +14,11 @@ pipeline {
                 sh 'docker build -t bilgemintern-backend:latest .'
                 // docker run
                 sh 'docker run -d --name app -p 8000:8000 bilgemintern-backend:latest'
+            }
+        }
+        stage('Image Scan') {
+            steps {
+                trivyImage('bilgemintern-backend:latest')
             }
         }
         stage('Test') {
