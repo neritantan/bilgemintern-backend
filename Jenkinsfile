@@ -8,6 +8,7 @@ pipeline {
                 gitleaks()
                 trivyFs()
                 dependencyCheck()
+                sonarScan('bilgemintern-backend')
             }
         }
         stage('Build') {
